@@ -1,0 +1,150 @@
+================================================================================
+                    START YOUR DASHBOARD RIGHT NOW
+================================================================================
+
+NO SEPARATE BACKEND NEEDED!
+Your Supabase cloud database IS your backend.
+
+================================================================================
+                        STEP 1: Open Terminal
+================================================================================
+
+Windows: 
+  - Press: Windows Key + R
+  - Type: cmd
+  - Press: Enter
+
+Mac:
+  - Press: Cmd + Space
+  - Type: terminal
+  - Press: Enter
+
+Linux:
+  - Open your terminal application
+
+================================================================================
+                        STEP 2: Copy & Paste This
+================================================================================
+
+cd ar-das1
+pnpm install
+pnpm dev
+
+================================================================================
+                        THAT'S IT! 
+================================================================================
+
+When you see this:
+  ➜  Local:   http://localhost:5173/
+
+THEN open your browser and go to:
+  http://localhost:5173/
+
+================================================================================
+                    WHAT IF pnpm IS NOT INSTALLED?
+================================================================================
+
+If you get "pnpm not found", run this FIRST:
+
+npm install -g pnpm
+
+Then run the 3 commands above again.
+
+================================================================================
+                        AFTER SERVER STARTS
+================================================================================
+
+1. Wait for "VITE v5.x.x ready" message
+2. Open browser: http://localhost:5173/
+3. You should see your dashboard
+4. Click on "Products", "Orders", "Customers" in the sidebar
+5. Your data should load from Supabase
+
+================================================================================
+                        TO STOP THE SERVER
+================================================================================
+
+Press: Ctrl + C (or Cmd + C on Mac)
+
+================================================================================
+                        IF PORT 5173 IS IN USE
+================================================================================
+
+The server will use next available port (5174, 5175, etc)
+Just open the URL it shows in the terminal.
+
+OR stop other server:
+
+Windows:
+  netstat -ano | findstr :5173
+  taskkill /PID <PID> /F
+
+Mac/Linux:
+  lsof -ti:5173 | xargs kill -9
+
+Then run: pnpm dev
+
+================================================================================
+                            ARCHITECTURE
+================================================================================
+
+You have:
+  ✅ Frontend: Vite + React (runs on localhost:5173)
+  ✅ Backend: Supabase (cloud hosted)
+  
+NO SEPARATE SERVER TO RUN!
+
+Just run: pnpm dev
+
+That's it! Everything works together.
+
+================================================================================
+                          TROUBLESHOOTING
+================================================================================
+
+PROBLEM: White blank page
+FIX: Wait 10 seconds and refresh (Ctrl+R)
+
+PROBLEM: "Cannot find module"
+FIX: Run: pnpm install
+
+PROBLEM: Products not showing
+FIX: Open DevTools (F12) → Console tab
+     Check for error messages
+     Should see: [v0] Products data: Array(...)
+
+PROBLEM: 401 Unauthorized errors
+FIX: Your Supabase RLS is blocking access
+    Go to: https://app.supabase.com
+    SQL Editor → Run this:
+    ALTER TABLE public.products DISABLE ROW LEVEL SECURITY;
+
+PROBLEM: "pnpm not found"
+FIX: npm install -g pnpm
+
+================================================================================
+                          QUICK REFERENCE
+================================================================================
+
+Command                     What it does
+─────────────────────────────────────────────────────────────────────────────
+pnpm dev                    Start development server (use this!)
+pnpm install                Install dependencies
+pnpm build                  Build for production
+pnpm lint                   Check for code errors
+Ctrl + C                    Stop the server
+
+================================================================================
+                            THAT'S ALL!
+================================================================================
+
+Your entire application (frontend + database) is ready to run.
+
+No configuration needed. No environment variables to set.
+
+Just: pnpm dev
+
+Then visit: http://localhost:5173/
+
+You're done! 🚀
+================================================================================

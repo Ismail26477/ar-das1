@@ -1,0 +1,27 @@
+================================================================================
+                    COPY & PASTE THESE COMMANDS
+================================================================================
+
+WINDOWS, MAC, OR LINUX - JUST COPY & PASTE ALL 3 LINES:
+
+cd ar-das1
+pnpm install
+pnpm dev
+
+================================================================================
+                        THEN OPEN YOUR BROWSER:
+
+http://localhost:5173/
+
+================================================================================
+                          THAT'S IT!
+================================================================================
+
+Wait for the message:
+  ➜  Local:   http://localhost:5173/
+
+Then your dashboard loads automatically!
+
+Products, Orders, Customers - all connected to your Supabase database.
+
+================================================================================
