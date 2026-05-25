@@ -260,7 +260,7 @@ export default function Orders() {
                             View Items
                           </TableCell>
                           <TableCell className="font-medium">
-                            {formatAmount(order.total)}
+                            {formatAmount(order.total_amount || 0)}
                           </TableCell>
                           <TableCell>
                             <Badge
@@ -329,10 +329,10 @@ export default function Orders() {
                   <h4 className="font-medium mb-2">Order Total</h4>
                   <div className="flex items-center gap-1 text-lg font-bold text-primary">
                     <IndianRupee className="w-4 h-4" />
-                    {selectedOrder.total.toLocaleString("en-IN")}
+                    {(selectedOrder.total_amount || 0).toLocaleString("en-IN")}
                   </div>
                   <p className="text-xs text-muted-foreground mt-2">
-                    Payment Method: {selectedOrder.payment_method}
+                    Tracking: {selectedOrder.tracking_number || 'Not available'}
                   </p>
                   <p className="text-xs text-muted-foreground">
                     Payment Status: {selectedOrder.payment_status}
@@ -360,8 +360,8 @@ export default function Orders() {
 
                 {/* Shipping Address */}
                 <div className="space-y-3">
-                  <h4 className="font-medium">Shipping Address</h4>
-                  <p className="text-sm text-foreground">{selectedOrder.shipping_address}</p>
+                  <h4 className="font-medium">Shipping Details</h4>
+                  <p className="text-sm text-foreground">{selectedOrder.notes || 'No special notes'}</p>
                 </div>
 
                 {/* Order Date */}

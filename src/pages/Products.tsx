@@ -46,11 +46,18 @@ export default function Products() {
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
 
+  // Debug logging
+  React.useEffect(() => {
+    console.log("[v0] Products data:", products);
+    console.log("[v0] Products loading:", isLoading);
+    console.log("[v0] Products error:", error);
+  }, [products, isLoading, error]);
+
   // Get unique categories
   const categories = useMemo(() => {
     if (!products) return [];
-    const cats = [...new Set(products.map((p: any) => p.category))];
-    return cats.sort();
+    const cats = [...new Set(products.map((p: any) => p.category_id || 'uncategorized'))];
+    return cats.filter(Boolean).sort();
   }, [products]);
 
   const filteredProducts = useMemo(() => {
@@ -61,10 +68,11 @@ export default function Products() {
       const matchesSearch =
         !searchQuery ||
         product.name?.toLowerCase().includes(searchLower) ||
-        product.sku?.toLowerCase().includes(searchLower);
+        product.sku?.toLowerCase().includes(searchLower) ||
+        product.description?.toLowerCase().includes(searchLower);
 
       const matchesCategory =
-        categoryFilter === "all" || product.category === categoryFilter;
+        categoryFilter === "all" || product.category_id === categoryFilter;
 
       return matchesSearch && matchesCategory;
     });
@@ -229,7 +237,7 @@ export default function Products() {
                           {product.sku}
                         </TableCell>
                         <TableCell>
-                          <Badge variant="outline">{product.category}</Badge>
+                          <Badge variant="outline">{product.category_id || 'N/A'}</Badge>
                         </TableCell>
                         <TableCell className="font-medium">
                           {formatAmount(product.price)}
@@ -264,7 +272,7 @@ export default function Products() {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Category</p>
-                  <Badge variant="outline">{selectedProduct.category}</Badge>
+                  <Badge variant="outline">{selectedProduct.category_id || 'N/A'}</Badge>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Price</p>

@@ -5,51 +5,58 @@ export interface Order {
   id: string;
   order_number: string;
   user_id: string;
-  total: number;
-  status: "processing" | "shipped" | "delivered" | "cancelled" | "returned";
-  payment_status: "pending" | "paid" | "failed" | "refunded";
-  razorpay_payment_id?: string;
-  shipping_address: string;
-  payment_method: string;
+  total_amount: number;
+  discount_amount?: number;
+  tax_amount?: number;
+  shipping_amount?: number;
+  status: string;
+  payment_status: string;
+  shipping_address_id?: string;
+  billing_address_id?: string;
+  notes?: string;
+  tracking_number?: string;
   created_at: string;
   updated_at: string;
+  delivered_at?: string;
 }
 
 export interface OrderItem {
   id: string;
   order_id: string;
   product_id: string;
-  product_name: string;
   quantity: number;
   unit_price: number;
+  discount_amount?: number;
+  line_total: number;
   created_at: string;
 }
 
 export interface OrderWithItems extends Order {
-  items: OrderItem[];
-  buyer_email: string;
-  buyer_name: string;
+  order_items?: OrderItem[];
+  buyer_email?: string;
+  buyer_name?: string;
+  profiles?: any;
 }
 
 export interface Product {
   id: string;
   name: string;
   description: string;
-  brand: string;
+  short_description?: string;
   category_id: string;
   subcategory_id: string;
   price: number;
   discount_price?: number;
-  stock: number;
+  stock_quantity: number;
+  sku: string;
   rating: number;
   review_count: number;
-  images: string[];
-  specs: Record<string, string>;
-  tags: string[];
+  image_url?: string;
+  images_json?: any;
+  specifications_json?: any;
+  slug: string;
   is_featured: boolean;
-  is_trending: boolean;
-  is_best_seller: boolean;
-  is_new_arrival: boolean;
+  is_active: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -96,10 +103,7 @@ export function useOrders() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("orders")
-        .select(`
-          *,
-          order_items(*)
-        `)
+        .select('*')
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -230,44 +234,32 @@ export function useCustomers() {
 
       if (profilesError) throw profilesError;
 
-      // Get auth users to fetch emails
-      const { data: authUsers } = await supabase.auth.admin?.listUsers() || { data: null };
-
-      // Create user map
-      const userMap: Record<string, any> = {};
-      if (authUsers) {
-        authUsers.users.forEach((user) => {
-          userMap[user.id] = user;
-        });
-      }
-
       // Fetch orders for each user
       const { data: orders, error: ordersError } = await supabase
         .from("orders")
-        .select("user_id, total")
-        .eq("payment_status", "paid");
+        .select("user_id, total_amount, payment_status");
 
       if (ordersError) throw ordersError;
 
       // Calculate stats per user
       const orderStats: Record<string, { count: number; total: number }> = {};
-      (orders || []).forEach((order) => {
+      (orders || []).forEach((order: any) => {
         if (!orderStats[order.user_id]) {
           orderStats[order.user_id] = { count: 0, total: 0 };
         }
         orderStats[order.user_id].count++;
-        orderStats[order.user_id].total += order.total || 0;
+        orderStats[order.user_id].total += order.total_amount || 0;
       });
 
       // Enrich profiles with order data
-      return (profiles || []).map((profile) => ({
-        name: profile.full_name,
-        email: userMap[profile.user_id]?.email || "unknown@example.com",
-        phone: profile.phone,
-        totalOrders: orderStats[profile.user_id]?.count || 0,
-        totalSpent: orderStats[profile.user_id]?.total || 0,
+      return (profiles || []).map((profile: any) => ({
+        name: profile.full_name || 'N/A',
+        email: profile.email || 'unknown@example.com',
+        phone: profile.phone_number || 'N/A',
+        totalOrders: orderStats[profile.id]?.count || 0,
+        totalSpent: orderStats[profile.id]?.total || 0,
         joinedAt: profile.created_at,
-        user_id: profile.user_id,
+        user_id: profile.id,
       }));
     },
     staleTime: 30000,
