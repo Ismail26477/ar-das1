@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { DashboardLayout } from "@/layouts/DashboardLayout";
 import { useProducts } from "@/hooks/useSupabase";
 import { Input } from "@/components/ui/input";
@@ -47,7 +47,7 @@ export default function Products() {
   const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
 
   // Debug logging
-  React.useEffect(() => {
+  useEffect(() => {
     console.log("[v0] Products data:", products);
     console.log("[v0] Products loading:", isLoading);
     console.log("[v0] Products error:", error);
